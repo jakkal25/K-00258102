@@ -28,7 +28,7 @@ public class CubeControl : MonoBehaviour
 
         if (Input.GetKey(KeyCode.S))
         {
-            myRB.AddForce(-2 * transform.forward);
+            myRB.AddForce(-1 * transform.forward);
             //transform.position += Vector3.back * Time.deltaTime;
         }
 
