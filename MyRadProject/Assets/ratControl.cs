@@ -6,15 +6,18 @@ public class ratControl : MonoBehaviour
 {
     float currentSpeed = 6;
     private float turningSpeed = 700;
+    Rigidbody rb;
+    Vector3 explosive = new Vector3(0, -5f, 0);
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        rb.freezeRotation = true;
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D))
         {
             if (transform.rotation.eulerAngles.y >= 235 && transform.rotation.eulerAngles.y < 43)
@@ -150,6 +153,10 @@ public class ratControl : MonoBehaviour
                 transform.Rotate(Vector3.up, 90 - transform.rotation.eulerAngles.y);
                 transform.position += currentSpeed * transform.forward * Time.deltaTime;
             }
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && rb.velocity.y == 0f)
+        {
+            rb.AddExplosionForce(11000, transform.position + explosive, 5);
         }
     }
 }
