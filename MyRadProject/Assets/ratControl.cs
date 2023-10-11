@@ -8,16 +8,26 @@ public class ratControl : MonoBehaviour
     private float turningSpeed = 700;
     Rigidbody rb;
     Vector3 explosive = new Vector3(0, -5f, 0);
+    float maxRatHealth = 100.0f;
+    float ratHealth;
+    public Health healthBar;
+    public playerTracker cam;
+    Vector3 oldPosition;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        ratHealth = maxRatHealth;
+        healthBar.MaxHealth(maxRatHealth);
     }
 
     // Update is called once per frame
     void Update()
     {
+        oldPosition = transform.forward;
         rb.freezeRotation = true;
+        ratHealth -= (12 * Time.deltaTime);
+        healthBar.setHealth(ratHealth);
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D))
         {
             if (transform.rotation.eulerAngles.y >= 235 && transform.rotation.eulerAngles.y < 43)
@@ -32,6 +42,7 @@ public class ratControl : MonoBehaviour
             {
                 transform.Rotate(Vector3.up, 45 - transform.rotation.eulerAngles.y);
                 transform.position += currentSpeed * transform.forward * Time.deltaTime;
+                cam.diagionalMove(transform.forward, Vector3.right, currentSpeed);
             }
         }
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A))
@@ -98,6 +109,7 @@ public class ratControl : MonoBehaviour
             {
                 transform.Rotate(Vector3.down, transform.rotation.eulerAngles.y);
                 transform.position += currentSpeed * transform.forward * Time.deltaTime;
+                cam.forwardMove(transform.forward, currentSpeed);
             }
             else
             {
@@ -119,6 +131,7 @@ public class ratControl : MonoBehaviour
             {
                 transform.Rotate(Vector3.up, 180 - transform.rotation.eulerAngles.y);
                 transform.position += currentSpeed * transform.forward * Time.deltaTime;
+                cam.forwardMove(transform.forward, currentSpeed);
             }
         }
 
@@ -136,6 +149,7 @@ public class ratControl : MonoBehaviour
             {
                 transform.Rotate(Vector3.up, 270 - transform.rotation.eulerAngles.y);
                 transform.position += currentSpeed * transform.forward * Time.deltaTime;
+                cam.sideMove(Vector3.left, currentSpeed);
             }
         }
         if (Input.GetKey(KeyCode.D) &! Input.GetKey(KeyCode.W) &! Input.GetKey(KeyCode.S))
@@ -152,11 +166,21 @@ public class ratControl : MonoBehaviour
             {
                 transform.Rotate(Vector3.up, 90 - transform.rotation.eulerAngles.y);
                 transform.position += currentSpeed * transform.forward * Time.deltaTime;
+                cam.sideMove(Vector3.right, currentSpeed);
             }
         }
         if (Input.GetKeyDown(KeyCode.Space) && rb.velocity.y == 0f)
         {
             rb.AddExplosionForce(11000, transform.position + explosive, 5);
+        }
+    }
+
+    public void addHealth(float health)
+    {
+        ratHealth += health;
+        if (ratHealth > maxRatHealth)
+        {
+            ratHealth = maxRatHealth;
         }
     }
 }
